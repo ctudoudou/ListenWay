@@ -1,0 +1,41 @@
+{
+  "title": "ListenWay",
+  "subtitle": "在幾秒鐘內將您的內容轉換成可分享的播客音頻",
+  "search": "搜尋",
+  "formatOptions": {
+    "website": "網站",
+    "pdf": "PDF / 文檔",
+    "text": "純文本"
+  },
+  "urlInput": {
+    "placeholder": "貼上 URL 到這裡",
+    "language": "語言",
+    "voice": "聲音",
+    "generateButton": "生成音頻"
+  },
+  "languages": {
+    "zh-TW": "繁體中文",
+    "zh-CN": "简体中文",
+    "en": "English"
+  },
+  "voices": {
+    "male": "男聲",
+    "female": "女聲"
+  },
+  "templates": {
+    "title": "模板",
+    "subtitle": "選擇一個模板開始",
+    "newsReport": "新聞報導",
+    "newsReportDesc": "專業的新聞播報風格",
+    "podcast": "播客對話",
+    "podcastDesc": "輕鬆的對話風格",
+    "audiobook": "有聲書",
+    "audiobookDesc": "適合長篇內容的朗讀"
+  },
+  "audioList": {
+    "title": "您的音頻",
+    "subtitle": "管理和播放您生成的音頻",
+    "noAudio": "還沒有音頻文件",
+    "startCreating": "開始創建您的第一個音頻"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "title": "ListenWay",
+  "subtitle": "Transform your content into shareable podcast audio in seconds",
+  "search": "Search",
+  "formatOptions": {
+    "website": "Website",
+    "pdf": "PDF / Document",
+    "text": "Plain Text"
+  },
+  "urlInput": {
+    "placeholder": "Paste URL here",
+    "language": "Language",
+    "voice": "Voice",
+    "generateButton": "Generate Audio"
+  },
+  "languages": {
+    "zh-TW": "繁體中文",
+    "zh-CN": "简体中文",
+    "en": "English"
+  },
+  "voices": {
+    "male": "Male",
+    "female": "Female"
+  },
+  "templates": {
+    "title": "Templates",
+    "subtitle": "Choose a template to get started",
+    "newsReport": "News Report",
+    "newsReportDesc": "Professional news broadcasting style",
+    "podcast": "Podcast Conversation",
+    "podcastDesc": "Casual conversational style",
+    "audiobook": "Audiobook",
+    "audiobookDesc": "Perfect for long-form content reading"
+  },
+  "audioList": {
+    "title": "Your Audio",
+    "subtitle": "Manage and play your generated audio",
+    "noAudio": "No audio files yet",
+    "startCreating": "Start creating your first audio"
+  }
+}

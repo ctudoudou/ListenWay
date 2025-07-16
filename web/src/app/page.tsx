@@ -1,237 +1,253 @@
 'use client';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { 
+  Layout, 
+  Input, 
+  Button, 
+  Select, 
+  Card, 
+  Typography, 
+  Space, 
+  Avatar, 
+  List, 
+  Row, 
+  Col,
+  Radio} from 'antd';
+import {
+  SearchOutlined,
+  SoundOutlined,
+  FileTextOutlined,
+  EditOutlined,
+  LinkOutlined
+} from '@ant-design/icons';
+import '../i18n';
+
+const { Header, Sider, Content } = Layout;
+const { Title, Text, Paragraph } = Typography;
+const { Option } = Select;
 
 export default function Home() {
+  const { t, i18n } = useTranslation();
   const [url, setUrl] = useState('');
   const [language, setLanguage] = useState('繁體中文');
-  const [host, setHost] = useState('林志玲');
-  const [guest, setGuest] = useState('馬雲');
+  const [host, setHost] = useState('某人');
+  const [guest, setGuest] = useState('某人');
+
+  const handleLanguageChange = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
+
+  const audioList = [
+    { title: '【聲明】example1...', duration: '05:19', date: '16/07/2025' },
+    { title: '【聲明】example2...', duration: '04:36', date: '16/07/2025' },
+    { title: '【聲明】example3...', duration: '06:22', date: '16/07/2025' },
+    { title: '【聲明】example4...', duration: '05:02', date: '16/07/2025' }
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <div className="text-xl font-bold text-gray-900">ListenWay 聽程</div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">安裝 ListenWay 聽程功能</span>
-            </div>
-          </div>
-        </div>
-      </header>
+    <Layout style={{ minHeight: '100vh' }}>
+      <Header style={{ 
+        background: '#fff', 
+        borderBottom: '1px solid #f0f0f0',
+        padding: '0 24px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
+        <Title level={3} style={{ margin: 0, color: '#1890ff' }}>
+          {t('title')}
+        </Title>
+        <Space>
+          <Select
+            value={i18n.language}
+            onChange={handleLanguageChange}
+            size="small"
+            style={{ width: 120 }}
+          >
+            <Option value="zh-TW">{t('languages.zh-TW')}</Option>
+            <Option value="zh-CN">{t('languages.zh-CN')}</Option>
+            <Option value="en">{t('languages.en')}</Option>
+          </Select>
+        </Space>
+      </Header>
 
-      {/* Sidebar */}
-      <div className="flex">
-        <div className="w-64 bg-white border-r border-gray-200 min-h-screen">
-          <div className="p-4">
-            <div className="mb-6">
-              <input
-                type="text"
-                placeholder="搜尋"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            
-            <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-900 mb-3">音頻</h3>
-              <div className="space-y-2">
-                <div className="flex items-center p-2 rounded-md hover:bg-gray-100">
-                  <div className="w-8 h-8 bg-purple-100 rounded-md flex items-center justify-center mr-3">
-                    <span className="text-purple-600 text-xs">🎵</span>
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium text-gray-900">【聲明】新增播客 AI 功能教學...</div>
-                    <div className="text-xs text-gray-500">05:19 • 16/07/2025</div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center p-2 rounded-md hover:bg-gray-100">
-                  <div className="w-8 h-8 bg-purple-100 rounded-md flex items-center justify-center mr-3">
-                    <span className="text-purple-600 text-xs">🎵</span>
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium text-gray-900">【聲明】免費支援播客 - 精...</div>
-                    <div className="text-xs text-gray-500">04:36 • 16/07/2025</div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center p-2 rounded-md hover:bg-gray-100">
-                  <div className="w-8 h-8 bg-purple-100 rounded-md flex items-center justify-center mr-3">
-                    <span className="text-purple-600 text-xs">🎵</span>
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium text-gray-900">【聲明】5 個日常生活力...</div>
-                    <div className="text-xs text-gray-500">06:22 • 16/07/2025</div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center p-2 rounded-md hover:bg-gray-100">
-                  <div className="w-8 h-8 bg-purple-100 rounded-md flex items-center justify-center mr-3">
-                    <span className="text-purple-600 text-xs">🎵</span>
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium text-gray-900">【聲明】大腦音樂與學習的功...</div>
-                    <div className="text-xs text-gray-500">05:02 • 16/07/2025</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="absolute bottom-4 left-4 right-4">
-            <div className="flex items-center text-sm text-gray-600">
-              <span className="mr-2">🌐</span>
-              <span>繁體中文（台灣）</span>
-            </div>
-          </div>
-        </div>
+      <Layout>
+         <Sider width={280} style={{ background: '#fff', borderRight: '1px solid #f0f0f0' }}>
+           <div style={{ padding: '16px' }}>
+             <Input
+               placeholder={t('search')}
+               prefix={<SearchOutlined />}
+               style={{ marginBottom: '24px' }}
+             />
+             
+             <div style={{ marginBottom: '24px' }}>
+               <Title level={5} style={{ marginBottom: '12px' }}>{t('audioList.title')}</Title>
+               <List
+                 dataSource={audioList}
+                 renderItem={(item) => (
+                   <List.Item style={{ padding: '8px 0', cursor: 'pointer' }}>
+                     <List.Item.Meta
+                       avatar={
+                         <Avatar 
+                           style={{ backgroundColor: '#722ed1' }} 
+                           icon={<SoundOutlined />}
+                         />
+                       }
+                       title={
+                         <Text style={{ fontSize: '14px' }}>{item.title}</Text>
+                       }
+                       description={
+                         <Text type="secondary" style={{ fontSize: '12px' }}>
+                           {item.duration} • {item.date}
+                         </Text>
+                       }
+                     />
+                   </List.Item>
+                 )}
+               />
+             </div>
+           </div>
+           
+           <div style={{ 
+             position: 'absolute', 
+             bottom: '16px', 
+             left: '16px', 
+             right: '16px' 
+           }}>
+             <Space>
+               <span>🌐</span>
+               <Text type="secondary">{t(`languages.${i18n.language}`)}</Text>
+             </Space>
+           </div>
+         </Sider>
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col items-center justify-center p-8">
-          <div className="max-w-2xl w-full text-center">
-            {/* Logo and Title */}
-            <div className="mb-8">
-              <div className="flex items-center justify-center mb-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg flex items-center justify-center mr-3">
-                  <span className="text-white text-2xl">🎵</span>
-                </div>
-                <h1 className="text-4xl font-bold text-gray-900">
-                  AI <span className="bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">播客生成器</span>
-                </h1>
-                <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center ml-3">
-                  <span className="text-white text-2xl">📝</span>
-                </div>
-              </div>
-              <p className="text-gray-600 text-lg">在幾秒鐘內將您的內容轉換成可分享的播客音頻</p>
-            </div>
+        <Content style={{ 
+           display: 'flex', 
+           flexDirection: 'column', 
+           alignItems: 'center', 
+           justifyContent: 'center',
+           padding: '48px 24px',
+           background: '#fafafa'
+         }}>
+           <div style={{ maxWidth: '800px', width: '100%', textAlign: 'center' }}>
+             {/* Logo and Title */}
+             <div style={{ marginBottom: '48px' }}>
+               <Space size="large" style={{ marginBottom: '16px' }}>
+                 <Avatar 
+                   size={64} 
+                   style={{ 
+                     background: 'linear-gradient(135deg, #ff4d4f 0%, #ff7a45 100%)'
+                   }}
+                 >
+                   🎵
+                 </Avatar>
+                 <Title level={1} style={{ margin: 0, fontSize: '48px' }}>
+                   AI <span style={{ 
+                     background: 'linear-gradient(135deg, #fa8c16 0%, #ff4d4f 100%)',
+                     WebkitBackgroundClip: 'text',
+                     WebkitTextFillColor: 'transparent'
+                   }}>{t('title')}</span>
+                 </Title>
+                 <Avatar 
+                   size={64} 
+                   style={{ backgroundColor: '#1890ff' }}
+                 >
+                   📝
+                 </Avatar>
+               </Space>
+               <Paragraph style={{ fontSize: '18px', color: '#666' }}>
+                 {t('subtitle')}
+               </Paragraph>
+             </div>
 
-            {/* Format Options */}
-            <div className="flex justify-center space-x-4 mb-8">
-              <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                📄 網站
-              </button>
-              <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                📺 YouTube
-              </button>
-              <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                📄 PDF / 文檔
-              </button>
-              <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                📝 純文本
-              </button>
-            </div>
+             {/* Format Options */}
+             <Radio.Group defaultValue="website" style={{ marginBottom: '32px' }}>
+               <Radio.Button value="website"><FileTextOutlined /> {t('formatOptions.website')}</Radio.Button>
+               <Radio.Button value="pdf"><FileTextOutlined /> {t('formatOptions.pdf')}</Radio.Button>
+               <Radio.Button value="text"><EditOutlined /> {t('formatOptions.text')}</Radio.Button>
+             </Radio.Group>
 
             {/* URL Input */}
-            <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-              <div className="flex items-center mb-4">
-                <span className="text-gray-500 mr-2">🔗</span>
-                <input
-                  type="text"
-                  placeholder="貼上 URL 到這裡"
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
-                  className="flex-1 text-lg border-none outline-none placeholder-gray-400"
-                />
-              </div>
-              
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center space-x-6">
-                  <div className="flex items-center">
-                    <span className="text-gray-500 mr-2">語言</span>
-                    <select 
-                      value={language} 
-                      onChange={(e) => setLanguage(e.target.value)}
-                      className="border border-gray-300 rounded px-2 py-1 text-sm"
-                    >
-                      <option>繁體中文</option>
-                      <option>簡體中文</option>
-                      <option>English</option>
-                    </select>
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <span className="text-gray-500 mr-2">主持人</span>
-                    <div className="flex items-center">
-                      <div className="w-6 h-6 bg-gray-300 rounded-full mr-1"></div>
-                      <select 
-                        value={host} 
-                        onChange={(e) => setHost(e.target.value)}
-                        className="border border-gray-300 rounded px-2 py-1 text-sm"
-                      >
-                        <option>林志玲</option>
-                        <option>其他主持人</option>
-                      </select>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <div className="w-6 h-6 bg-gray-300 rounded-full mr-1"></div>
-                    <select 
-                      value={guest} 
-                      onChange={(e) => setGuest(e.target.value)}
-                      className="border border-gray-300 rounded px-2 py-1 text-sm"
-                    >
-                      <option>馬雲</option>
-                      <option>其他嘉賓</option>
-                    </select>
-                    <span className="text-gray-400 ml-1">ⓘ</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+             <Card style={{ marginBottom: '32px', textAlign: 'left' }}>
+               <Input
+                 size="large"
+                 placeholder={t('urlInput.placeholder')}
+                 prefix={<LinkOutlined />}
+                 value={url}
+                 onChange={(e) => setUrl(e.target.value)}
+                 style={{ marginBottom: '16px' }}
+               />
+               
+               <Row gutter={16} align="middle">
+                 <Col span={6}>
+                   <Space>
+                     <Text type="secondary">{t('urlInput.language')}</Text>
+                     <Select 
+                       value={language} 
+                       onChange={setLanguage}
+                       size="small"
+                       style={{ width: 120 }}
+                     >
+                       <Option value="繁體中文">{t('languages.zh-TW')}</Option>
+                       <Option value="簡體中文">{t('languages.zh-CN')}</Option>
+                       <Option value="English">{t('languages.en')}</Option>
+                     </Select>
+                   </Space>
+                 </Col>
+                 
+                 <Col span={9}>
+                   <Space>
+                     <Text type="secondary">主持人</Text>
+                     <Avatar size="small" style={{ backgroundColor: '#d9d9d9' }} />
+                     <Select 
+                       value={host} 
+                       onChange={setHost}
+                       size="small"
+                       style={{ width: 100 }}
+                     >
+                       <Option value="林志玲">林志玲</Option>
+                       <Option value="其他主持人">其他主持人</Option>
+                     </Select>
+                   </Space>
+                 </Col>
+                 
+                 <Col span={9}>
+                   <Space>
+                     <Avatar size="small" style={{ backgroundColor: '#d9d9d9' }} />
+                     <Select 
+                       value={guest} 
+                       onChange={setGuest}
+                       size="small"
+                       style={{ width: 100 }}
+                     >
+                       <Option value="馬雲">馬雲</Option>
+                       <Option value="其他嘉賓">其他嘉賓</Option>
+                     </Select>
+                     <Text type="secondary">ⓘ</Text>
+                   </Space>
+                 </Col>
+               </Row>
+             </Card>
 
-            {/* Generate Button */}
-            <button className="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-4 rounded-xl text-lg font-medium hover:from-purple-600 hover:to-purple-700 transition-all duration-200 mb-8">
-              ✨ 立即生成
-            </button>
-
-            {/* Templates */}
-            <div className="text-left">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">數據模板示例</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer">
-                  <div className="flex items-center mb-2">
-                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                      <span className="text-blue-600 text-sm">📊</span>
-                    </div>
-                    <span className="font-medium text-gray-900">史丹佛 AI 播客報告 2024</span>
-                  </div>
-                </div>
-                
-                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer">
-                  <div className="flex items-center mb-2">
-                    <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center mr-3">
-                      <span className="text-red-600 text-sm">📰</span>
-                    </div>
-                    <span className="font-medium text-gray-900">最新美的新聞：健康與文</span>
-                  </div>
-                </div>
-                
-                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer">
-                  <div className="flex items-center mb-2">
-                    <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center mr-3">
-                      <span className="text-orange-600 text-sm">🎯</span>
-                    </div>
-                    <span className="font-medium text-gray-900">大腦專題與中的初訓練營</span>
-                  </div>
-                </div>
-                
-                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer">
-                  <div className="flex items-center mb-2">
-                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                      <span className="text-green-600 text-sm">📅</span>
-                    </div>
-                    <span className="font-medium text-gray-900">6 個日常生活力小貼士</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+             {/* Generate Button */}
+             <Button 
+               type="primary" 
+               size="large" 
+               block
+               style={{ 
+                 height: '56px',
+                 fontSize: '18px',
+                 background: 'linear-gradient(135deg, #722ed1 0%, #9254de 100%)',
+                 border: 'none',
+                 marginBottom: '48px'
+               }}
+             >
+               ✨ {t('urlInput.generateButton')}
+             </Button>
+           </div>
+         </Content>
+       </Layout>
+     </Layout>
+ );
 }

@@ -1,0 +1,41 @@
+{
+  "title": "ListenWay",
+  "subtitle": "在几秒钟内将您的内容转换成可分享的播客音频",
+  "search": "搜索",
+  "formatOptions": {
+    "website": "网站",
+    "pdf": "PDF / 文档",
+    "text": "纯文本"
+  },
+  "urlInput": {
+    "placeholder": "粘贴 URL 到这里",
+    "language": "语言",
+    "voice": "声音",
+    "generateButton": "生成音频"
+  },
+  "languages": {
+    "zh-TW": "繁體中文",
+    "zh-CN": "简体中文",
+    "en": "English"
+  },
+  "voices": {
+    "male": "男声",
+    "female": "女声"
+  },
+  "templates": {
+    "title": "模板",
+    "subtitle": "选择一个模板开始",
+    "newsReport": "新闻报道",
+    "newsReportDesc": "专业的新闻播报风格",
+    "podcast": "播客对话",
+    "podcastDesc": "轻松的对话风格",
+    "audiobook": "有声书",
+    "audiobookDesc": "适合长篇内容的朗读"
+  },
+  "audioList": {
+    "title": "您的音频",
+    "subtitle": "管理和播放您生成的音频",
+    "noAudio": "还没有音频文件",
+    "startCreating": "开始创建您的第一个音频"
+  }
+}
