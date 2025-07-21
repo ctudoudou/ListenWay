@@ -48,41 +48,46 @@ export default function Home() {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Header style={{ 
-        background: '#fff', 
-        borderBottom: '1px solid #f0f0f0',
-        padding: '0 24px',
+        background: '#667eea', 
+        borderBottom: '1px solid #e2e8f0',
+        padding: '0 32px',
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center'
       }}>
-        <Title level={3} style={{ margin: 0, color: '#1890ff' }}>
+        <Title level={2} style={{ 
+          margin: 0, 
+          color: '#fff',
+          fontWeight: 600,
+          letterSpacing: '1px'
+        }}>
           {t('title')}
         </Title>
-        <Space>
-          <Select
-            value={i18n.language}
-            onChange={handleLanguageChange}
-            size="small"
-            style={{ width: 120 }}
-          >
-            <Option value="zh-TW">{t('languages.zh-TW')}</Option>
-            <Option value="zh-CN">{t('languages.zh-CN')}</Option>
-            <Option value="en">{t('languages.en')}</Option>
-          </Select>
-        </Space>
       </Header>
 
       <Layout>
-         <Sider width={280} style={{ background: '#fff', borderRight: '1px solid #f0f0f0' }}>
-           <div style={{ padding: '16px' }}>
+         <Sider width={300} style={{ 
+           background: '#f8fafc', 
+           borderRight: '1px solid #e2e8f0'
+         }}>
+           <div style={{ padding: '20px' }}>
              <Input
                placeholder={t('search')}
                prefix={<SearchOutlined />}
-               style={{ marginBottom: '24px' }}
+               style={{ 
+                 marginBottom: '24px',
+                 borderRadius: '4px',
+                 border: '1px solid #d1d5db'
+               }}
+               size="large"
              />
              
              <div style={{ marginBottom: '24px' }}>
-               <Title level={5} style={{ marginBottom: '12px' }}>{t('audioList.title')}</Title>
+               <Title level={5} style={{ 
+                 marginBottom: '16px',
+                 color: '#374151',
+                 fontWeight: 600
+               }}>{t('audioList.title')}</Title>
                <List
                  dataSource={audioList}
                  renderItem={(item) => (
@@ -108,18 +113,7 @@ export default function Home() {
                />
              </div>
            </div>
-           
-           <div style={{ 
-             position: 'absolute', 
-             bottom: '16px', 
-             left: '16px', 
-             right: '16px' 
-           }}>
-             <Space>
-               <span>🌐</span>
-               <Text type="secondary">{t(`languages.${i18n.language}`)}</Text>
-             </Space>
-           </div>
+
          </Sider>
 
         <Content style={{ 
@@ -127,56 +121,131 @@ export default function Home() {
            flexDirection: 'column', 
            alignItems: 'center', 
            justifyContent: 'center',
-           padding: '48px 24px',
-           background: '#fafafa'
+           padding: '48px 32px',
+           background: '#ffffff',
+           minHeight: 'calc(100vh - 64px)',
+           position: 'relative'
          }}>
            <div style={{ maxWidth: '800px', width: '100%', textAlign: 'center' }}>
              {/* Logo and Title */}
-             <div style={{ marginBottom: '48px' }}>
-               <Space size="large" style={{ marginBottom: '16px' }}>
-                 <Avatar 
-                   size={64} 
-                   style={{ 
-                     background: 'linear-gradient(135deg, #ff4d4f 0%, #ff7a45 100%)'
-                   }}
-                 >
-                   🎵
-                 </Avatar>
-                 <Title level={1} style={{ margin: 0, fontSize: '48px' }}>
-                   AI <span style={{ 
-                     background: 'linear-gradient(135deg, #fa8c16 0%, #ff4d4f 100%)',
-                     WebkitBackgroundClip: 'text',
-                     WebkitTextFillColor: 'transparent'
-                   }}>{t('title')}</span>
-                 </Title>
-                 <Avatar 
-                   size={64} 
-                   style={{ backgroundColor: '#1890ff' }}
-                 >
-                   📝
-                 </Avatar>
-               </Space>
-               <Paragraph style={{ fontSize: '18px', color: '#666' }}>
-                 {t('subtitle')}
-               </Paragraph>
+             <div style={{ marginBottom: '56px' }}>
+               <div style={{ 
+                 background: '#ffffff',
+                 borderRadius: '8px',
+                 padding: '32px',
+                 border: '1px solid #e2e8f0'
+               }}>
+                 <Space size="large" style={{ marginBottom: '20px' }}>
+                   <Avatar 
+                     size={72} 
+                     style={{ 
+                       background: '#667eea'
+                     }}
+                   >
+                     🎵
+                   </Avatar>
+                   <Title level={1} style={{ 
+                     margin: 0, 
+                     fontSize: '52px',
+                     fontWeight: 700,
+                     color: '#667eea'
+                   }}>
+                     AI {t('title')}
+                   </Title>
+                   <Avatar 
+                     size={72} 
+                     style={{ 
+                       background: '#764ba2'
+                     }}
+                   >
+                     📝
+                   </Avatar>
+                 </Space>
+                 <Paragraph style={{ 
+                   fontSize: '18px', 
+                   color: '#64748b',
+                   fontWeight: 400,
+                   lineHeight: 1.5
+                 }}>
+                   {t('subtitle')}
+                 </Paragraph>
+               </div>
              </div>
 
              {/* Format Options */}
-             <Radio.Group defaultValue="website" style={{ marginBottom: '32px' }}>
-               <Radio.Button value="website"><FileTextOutlined /> {t('formatOptions.website')}</Radio.Button>
-               <Radio.Button value="pdf"><FileTextOutlined /> {t('formatOptions.pdf')}</Radio.Button>
-               <Radio.Button value="text"><EditOutlined /> {t('formatOptions.text')}</Radio.Button>
+             <Radio.Group 
+               defaultValue="website" 
+               style={{ 
+                 marginBottom: '40px',
+                 display: 'flex',
+                 justifyContent: 'center'
+               }}
+               size="large"
+             >
+               <Radio.Button 
+                 value="website"
+                 style={{
+                   borderRadius: '4px 0 0 4px',
+                   height: '40px',
+                   display: 'flex',
+                   alignItems: 'center',
+                   fontWeight: 400,
+                   border: '1px solid #d1d5db'
+                 }}
+               >
+                 <FileTextOutlined style={{ marginRight: '8px' }} /> {t('formatOptions.website')}
+               </Radio.Button>
+               <Radio.Button 
+                 value="pdf"
+                 style={{
+                   borderRadius: '0',
+                   height: '40px',
+                   display: 'flex',
+                   alignItems: 'center',
+                   fontWeight: 400,
+                   border: '1px solid #d1d5db',
+                   borderLeft: 'none',
+                   borderRight: 'none'
+                 }}
+               >
+                 <FileTextOutlined style={{ marginRight: '8px' }} /> {t('formatOptions.pdf')}
+               </Radio.Button>
+               <Radio.Button 
+                 value="text"
+                 style={{
+                   borderRadius: '0 4px 4px 0',
+                   height: '40px',
+                   display: 'flex',
+                   alignItems: 'center',
+                   fontWeight: 400,
+                   border: '1px solid #d1d5db'
+                 }}
+               >
+                 <EditOutlined style={{ marginRight: '8px' }} /> {t('formatOptions.text')}
+               </Radio.Button>
              </Radio.Group>
 
             {/* URL Input */}
-             <Card style={{ marginBottom: '32px', textAlign: 'left' }}>
+             <Card style={{ 
+               marginBottom: '40px', 
+               textAlign: 'left',
+               borderRadius: '8px',
+               border: '1px solid #e2e8f0',
+               background: '#ffffff'
+             }}>
                <Input
                  size="large"
                  placeholder={t('urlInput.placeholder')}
-                 prefix={<LinkOutlined />}
+                 prefix={<LinkOutlined style={{ color: '#667eea' }} />}
                  value={url}
                  onChange={(e) => setUrl(e.target.value)}
-                 style={{ marginBottom: '16px' }}
+                 style={{ 
+                   marginBottom: '20px',
+                   borderRadius: '4px',
+                   border: '1px solid #d1d5db',
+                   fontSize: '16px',
+                   height: '40px'
+                 }}
                />
                
                <Row gutter={16} align="middle">
@@ -236,15 +305,53 @@ export default function Home() {
                size="large" 
                block
                style={{ 
-                 height: '56px',
-                 fontSize: '18px',
-                 background: 'linear-gradient(135deg, #722ed1 0%, #9254de 100%)',
+                 height: '48px',
+                 fontSize: '16px',
+                 fontWeight: 500,
+                 background: '#667eea',
                  border: 'none',
+                 borderRadius: '4px',
                  marginBottom: '48px'
                }}
              >
                ✨ {t('urlInput.generateButton')}
              </Button>
+           </div>
+           
+           {/* Language Switcher - Bottom Left */}
+           <div style={{
+             position: 'fixed',
+             bottom: '24px',
+             left: '24px',
+             zIndex: 1000
+           }}>
+             <div style={{
+               background: '#ffffff',
+               borderRadius: '4px',
+               padding: '8px 12px',
+               border: '1px solid #e2e8f0',
+               display: 'flex',
+               alignItems: 'center',
+               gap: '8px'
+             }}>
+               <span style={{ fontSize: '16px' }}>🌐</span>
+               <Select
+                 value={i18n.language}
+                 onChange={handleLanguageChange}
+                 size="small"
+                 style={{ 
+                   width: 120,
+                   borderRadius: '4px'
+                 }}
+                 dropdownStyle={{
+                   borderRadius: '4px'
+                 }}
+               >
+                 <Option value="zh-TW">{t('languages.zh-TW')}</Option>
+                 <Option value="zh-CN">{t('languages.zh-CN')}</Option>
+                 <Option value="en">{t('languages.en')}</Option>
+               </Select>
+             </div>
            </div>
          </Content>
        </Layout>
