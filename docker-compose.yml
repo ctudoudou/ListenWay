@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: listenway-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: listenway
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # 如果需要初始化脚本，可以取消注释下面这行
+      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - listenway-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d listenway"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # 可选：添加 pgAdmin 用于数据库管理
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: listenway-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@listenway.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - listenway-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  listenway-network:
+    driver: bridge
