@@ -50,7 +50,11 @@ export default function Home() {
     {
       key: 'profile',
       icon: <UserOutlined />,
-      label: '个人资料',
+      label: (
+        <Link href="/profile" style={{ textDecoration: 'none' }}>
+          个人资料
+        </Link>
+      ),
     },
     ...(session?.user?.role === 'ADMIN' ? [{
       key: 'admin',
