@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSession, signIn, signOut } from 'next-auth/react';
 import { 
   Layout, 
   Input, 
@@ -13,14 +14,20 @@ import {
   List, 
   Row, 
   Col,
-  Radio} from 'antd';
+  Radio,
+  Dropdown,
+  MenuProps} from 'antd';
 import {
   SearchOutlined,
   SoundOutlined,
   FileTextOutlined,
   EditOutlined,
-  LinkOutlined
+  LinkOutlined,
+  UserOutlined,
+  LogoutOutlined,
+  SettingOutlined
 } from '@ant-design/icons';
+import Link from 'next/link';
 import '../i18n';
 
 const { Header, Sider, Content } = Layout;
@@ -29,6 +36,7 @@ const { Option } = Select;
 
 export default function Home() {
   const { t, i18n } = useTranslation();
+  const { data: session, status } = useSession();
   const [url, setUrl] = useState('');
   const [language, setLanguage] = useState('繁體中文');
   const [host, setHost] = useState('某人');
@@ -37,6 +45,32 @@ export default function Home() {
   const handleLanguageChange = (lng: string) => {
     i18n.changeLanguage(lng);
   };
+
+  const userMenuItems: MenuProps['items'] = [
+    {
+      key: 'profile',
+      icon: <UserOutlined />,
+      label: '个人资料',
+    },
+    ...(session?.user?.role === 'ADMIN' ? [{
+      key: 'admin',
+      icon: <SettingOutlined />,
+      label: (
+        <Link href="/admin" style={{ textDecoration: 'none' }}>
+          管理后台
+        </Link>
+      ),
+    }] : []),
+    {
+      type: 'divider' as const,
+    },
+    {
+      key: 'logout',
+      icon: <LogoutOutlined />,
+      label: '退出登录',
+      onClick: () => signOut(),
+    },
+  ];
 
   const audioList = [
     { title: '【聲明】example1...', duration: '05:19', date: '16/07/2025' },
@@ -52,7 +86,7 @@ export default function Home() {
         borderBottom: '1px solid #e2e8f0',
         padding: '0 32px',
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center'
       }}>
         <Title level={2} style={{ 
@@ -63,6 +97,35 @@ export default function Home() {
         }}>
           {t('title')}
         </Title>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          {status === 'loading' ? (
+            <Button loading type="primary" ghost>
+              加载中...
+            </Button>
+          ) : session ? (
+            <Space>
+              <span style={{ color: 'white' }}>欢迎，{session.user?.name}</span>
+              <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
+                <Avatar 
+                  style={{ cursor: 'pointer', backgroundColor: '#764ba2' }}
+                  icon={<UserOutlined />}
+                />
+              </Dropdown>
+            </Space>
+          ) : (
+            <Space>
+              <Button type="primary" ghost onClick={() => signIn()}>
+                登录
+              </Button>
+              <Link href="/auth/signup">
+                <Button type="primary">
+                  注册
+                </Button>
+              </Link>
+            </Space>
+          )}
+        </div>
       </Header>
 
       <Layout>
