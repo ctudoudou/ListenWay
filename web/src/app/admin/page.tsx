@@ -2,35 +2,51 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 import {
-  Layout,
-  Table,
   Card,
   Typography,
-  Input,
-  Button,
-  Space,
-  Tag,
-  Popconfirm,
-  message,
-  Avatar,
   Statistic,
   Row,
-  Col
+  Col,
+  List,
+  Avatar,
+  Progress,
+  Table,
+  Tag,
+  Space,
+  Button,
+  Input,
+  Popconfirm
 } from 'antd'
 import {
   UserOutlined,
-  SearchOutlined,
+  SoundOutlined,
+  EyeOutlined,
+  DownloadOutlined,
+  TrophyOutlined,
+  RiseOutlined,
+  SettingOutlined,
+  DashboardOutlined,
   DeleteOutlined,
-  ReloadOutlined,
-  DashboardOutlined
+  ReloadOutlined
 } from '@ant-design/icons'
-import { signOut } from 'next-auth/react'
+import AdminLayout from '@/components/AdminLayout'
 
-const { Header, Content } = Layout
-const { Title } = Typography
-const { Search } = Input
+const { Title, Text } = Typography
+
+interface DashboardStats {
+  totalUsers: number
+  totalPodcasts: number
+  totalViews: number
+  totalDownloads: number
+  recentUsers: User[]
+  recentPodcasts: Podcast[]
+  systemHealth: {
+    cpu: number
+    memory: number
+    storage: number
+  }
+}
 
 interface User {
   id: string
@@ -38,273 +54,238 @@ interface User {
   email: string
   role: string
   createdAt: string
-  updatedAt: string
-  _count: {
-    podcasts: number
-  }
 }
 
-interface UsersResponse {
-  users: User[]
-  pagination: {
-    page: number
-    limit: number
-    total: number
-    pages: number
+interface Podcast {
+  id: string
+  title: string
+  status: string
+  createdAt: string
+  user: {
+    name: string
   }
 }
 
 export default function AdminDashboard() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
-  const [users, setUsers] = useState<User[]>([])
-  const [loading, setLoading] = useState(false)
-  const [searchText, setSearchText] = useState('')
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-    total: 0
-  })
+  const { data: session } = useSession()
+  const [stats, setStats] = useState<DashboardStats | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  // 检查权限
-  useEffect(() => {
-    if (status === 'loading') return
-    if (!session || session.user.role !== 'ADMIN') {
-      router.push('/auth/signin')
-      return
-    }
-  }, [session, status, router])
-
-  // 获取用户列表
-  const fetchUsers = async (page = 1, search = '') => {
-    setLoading(true)
+  // 获取仪表板数据
+  const fetchDashboardStats = async () => {
     try {
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: pagination.pageSize.toString(),
-        ...(search && { search })
-      })
-
-      const response = await fetch(`/api/admin/users?${params}`)
-      const data: UsersResponse = await response.json()
-
+      const response = await fetch('/api/admin/dashboard')
       if (response.ok) {
-        setUsers(data.users)
-        setPagination(prev => ({
-          ...prev,
-          current: data.pagination.page,
-          total: data.pagination.total
-        }))
-      } else {
-        message.error('获取用户列表失败')
+        const data = await response.json()
+        setStats(data)
       }
     } catch (error) {
-      message.error('网络错误')
+      console.error('获取仪表板数据失败:', error)
     } finally {
       setLoading(false)
     }
   }
 
-  // 删除用户
-  const handleDeleteUser = async (userId: string) => {
-    try {
-      const response = await fetch(`/api/admin/users?id=${userId}`, {
-        method: 'DELETE'
-      })
-
-      if (response.ok) {
-        message.success('用户删除成功')
-        fetchUsers(pagination.current, searchText)
-      } else {
-        const data = await response.json()
-        message.error(data.error || '删除失败')
-      }
-    } catch (error) {
-      message.error('网络错误')
-    }
-  }
-
-  // 搜索用户
-  const handleSearch = (value: string) => {
-    setSearchText(value)
-    fetchUsers(1, value)
-  }
-
-  // 页面变化
-  const handleTableChange = (page: number, pageSize: number) => {
-    setPagination(prev => ({ ...prev, current: page, pageSize }))
-    fetchUsers(page, searchText)
-  }
-
   useEffect(() => {
     if (session?.user?.role === 'ADMIN') {
-      fetchUsers()
+      fetchDashboardStats()
     }
   }, [session])
-
-  if (status === 'loading') {
-    return <div>加载中...</div>
-  }
 
   if (!session || session.user.role !== 'ADMIN') {
     return null
   }
 
-  const columns = [
-    {
-      title: '用户',
-      dataIndex: 'name',
-      key: 'name',
-      render: (name: string, record: User) => (
-        <Space>
-          <Avatar icon={<UserOutlined />} />
-          <div>
-            <div style={{ fontWeight: 500 }}>{name}</div>
-            <div style={{ fontSize: '12px', color: '#666' }}>{record.email}</div>
-          </div>
-        </Space>
-      )
-    },
-    {
-      title: '角色',
-      dataIndex: 'role',
-      key: 'role',
-      render: (role: string) => (
-        <Tag color={role === 'ADMIN' ? 'red' : 'blue'}>
-          {role === 'ADMIN' ? '管理员' : '用户'}
-        </Tag>
-      )
-    },
-    {
-      title: '播客数量',
-      dataIndex: '_count',
-      key: 'podcasts',
-      render: (count: { podcasts: number }) => count.podcasts
-    },
-    {
-      title: '注册时间',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (date: string) => new Date(date).toLocaleDateString('zh-CN')
-    },
-    {
-      title: '操作',
-      key: 'action',
-      render: (_, record: User) => (
-        <Space>
-          {record.id !== session.user.id && (
-            <Popconfirm
-              title="确定要删除这个用户吗？"
-              description="此操作不可恢复"
-              onConfirm={() => handleDeleteUser(record.id)}
-              okText="确定"
-              cancelText="取消"
-            >
-              <Button
-                type="text"
-                danger
-                icon={<DeleteOutlined />}
-                size="small"
-              >
-                删除
-              </Button>
-            </Popconfirm>
-          )}
-        </Space>
-      )
+  // 模拟数据（当API未准备好时）
+  const mockStats: DashboardStats = {
+    totalUsers: 1250,
+    totalPodcasts: 89,
+    totalViews: 15420,
+    totalDownloads: 8930,
+    recentUsers: [
+      { id: '1', name: '张三', email: 'zhang@example.com', role: 'USER', createdAt: '2024-01-20' },
+      { id: '2', name: '李四', email: 'li@example.com', role: 'USER', createdAt: '2024-01-19' },
+      { id: '3', name: '王五', email: 'wang@example.com', role: 'USER', createdAt: '2024-01-18' },
+    ],
+    recentPodcasts: [
+      { id: '1', title: '科技前沿讨论', status: 'PUBLISHED', createdAt: '2024-01-20', user: { name: '张三' } },
+      { id: '2', title: '生活随想录', status: 'PROCESSING', createdAt: '2024-01-19', user: { name: '李四' } },
+      { id: '3', title: '音乐分享会', status: 'PUBLISHED', createdAt: '2024-01-18', user: { name: '王五' } },
+    ],
+    systemHealth: {
+      cpu: 45,
+      memory: 68,
+      storage: 32
     }
-  ]
+  }
+
+  const currentStats = stats || mockStats
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{
-        background: '#667eea',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '0 24px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <DashboardOutlined style={{ color: 'white', fontSize: '20px', marginRight: '12px' }} />
-          <Title level={3} style={{ color: 'white', margin: 0 }}>
-            管理后台
-          </Title>
-        </div>
-        <Space>
-          <span style={{ color: 'white' }}>欢迎，{session.user.name}</span>
-          <Button type="primary" ghost onClick={() => signOut()}>
-            退出登录
-          </Button>
-        </Space>
-      </Header>
-
-      <Content style={{ padding: '24px' }}>
+    <AdminLayout>
+      <div>
+        <Title level={2} style={{ marginBottom: '24px' }}>仪表板概览</Title>
+        
+        {/* 统计卡片 */}
         <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
-          <Col span={8}>
+          <Col xs={24} sm={12} lg={6}>
             <Card>
               <Statistic
                 title="总用户数"
-                value={pagination.total}
-                prefix={<UserOutlined />}
+                value={currentStats.totalUsers}
+                prefix={<UserOutlined style={{ color: '#1890ff' }} />}
+                suffix="人"
               />
             </Card>
           </Col>
-          <Col span={8}>
+          <Col xs={24} sm={12} lg={6}>
             <Card>
               <Statistic
-                title="管理员数量"
-                value={users.filter(u => u.role === 'ADMIN').length}
-                prefix={<UserOutlined />}
+                title="总播客数"
+                value={currentStats.totalPodcasts}
+                prefix={<SoundOutlined style={{ color: '#52c41a' }} />}
+                suffix="个"
               />
             </Card>
           </Col>
-          <Col span={8}>
+          <Col xs={24} sm={12} lg={6}>
             <Card>
               <Statistic
-                title="普通用户数量"
-                value={users.filter(u => u.role === 'USER').length}
-                prefix={<UserOutlined />}
+                title="总观看数"
+                value={currentStats.totalViews}
+                prefix={<EyeOutlined style={{ color: '#faad14' }} />}
+                suffix="次"
+              />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} lg={6}>
+            <Card>
+              <Statistic
+                title="总下载数"
+                value={currentStats.totalDownloads}
+                prefix={<DownloadOutlined style={{ color: '#f5222d' }} />}
+                suffix="次"
               />
             </Card>
           </Col>
         </Row>
 
-        <Card>
-          <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between' }}>
-            <Title level={4}>用户管理</Title>
-            <Space>
-              <Search
-                placeholder="搜索用户名或邮箱"
-                allowClear
-                onSearch={handleSearch}
-                style={{ width: 300 }}
+        {/* 系统健康状态 */}
+        <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+          <Col xs={24} lg={8}>
+            <Card title="系统健康状态" extra={<TrophyOutlined />}>
+              <div style={{ marginBottom: '16px' }}>
+                <Text>CPU 使用率</Text>
+                <Progress 
+                  percent={currentStats.systemHealth.cpu} 
+                  status={currentStats.systemHealth.cpu > 80 ? 'exception' : 'active'}
+                  strokeColor={currentStats.systemHealth.cpu > 80 ? '#ff4d4f' : '#52c41a'}
+                />
+              </div>
+              <div style={{ marginBottom: '16px' }}>
+                <Text>内存使用率</Text>
+                <Progress 
+                  percent={currentStats.systemHealth.memory} 
+                  status={currentStats.systemHealth.memory > 80 ? 'exception' : 'active'}
+                  strokeColor={currentStats.systemHealth.memory > 80 ? '#ff4d4f' : '#1890ff'}
+                />
+              </div>
+              <div>
+                <Text>存储使用率</Text>
+                <Progress 
+                  percent={currentStats.systemHealth.storage} 
+                  status={currentStats.systemHealth.storage > 80 ? 'exception' : 'active'}
+                  strokeColor={currentStats.systemHealth.storage > 80 ? '#ff4d4f' : '#faad14'}
+                />
+              </div>
+            </Card>
+          </Col>
+          
+          <Col xs={24} lg={8}>
+            <Card title="最新用户" extra={<RiseOutlined />}>
+              <List
+                dataSource={currentStats.recentUsers}
+                renderItem={(user) => (
+                  <List.Item>
+                    <List.Item.Meta
+                      avatar={<Avatar icon={<UserOutlined />} />}
+                      title={user.name}
+                      description={
+                        <div>
+                          <div>{user.email}</div>
+                          <Text type="secondary" style={{ fontSize: '12px' }}>
+                            {new Date(user.createdAt).toLocaleDateString('zh-CN')}
+                          </Text>
+                        </div>
+                      }
+                    />
+                    <Tag color={user.role === 'ADMIN' ? 'red' : 'blue'}>
+                      {user.role === 'ADMIN' ? '管理员' : '用户'}
+                    </Tag>
+                  </List.Item>
+                )}
               />
-              <Button
-                icon={<ReloadOutlined />}
-                onClick={() => fetchUsers(pagination.current, searchText)}
-              >
-                刷新
-              </Button>
-            </Space>
-          </div>
+            </Card>
+          </Col>
+          
+          <Col xs={24} lg={8}>
+            <Card title="最新播客" extra={<SoundOutlined />}>
+              <List
+                dataSource={currentStats.recentPodcasts}
+                renderItem={(podcast) => (
+                  <List.Item>
+                    <List.Item.Meta
+                      avatar={<Avatar icon={<SoundOutlined />} style={{ backgroundColor: '#52c41a' }} />}
+                      title={podcast.title}
+                      description={
+                        <div>
+                          <div>作者: {podcast.user.name}</div>
+                          <Text type="secondary" style={{ fontSize: '12px' }}>
+                            {new Date(podcast.createdAt).toLocaleDateString('zh-CN')}
+                          </Text>
+                        </div>
+                      }
+                    />
+                    <Tag color={podcast.status === 'PUBLISHED' ? 'green' : 'orange'}>
+                      {podcast.status === 'PUBLISHED' ? '已发布' : '处理中'}
+                    </Tag>
+                  </List.Item>
+                )}
+              />
+            </Card>
+          </Col>
+        </Row>
 
-          <Table
-            columns={columns}
-            dataSource={users}
-            rowKey="id"
-            loading={loading}
-            pagination={{
-              current: pagination.current,
-              pageSize: pagination.pageSize,
-              total: pagination.total,
-              showSizeChanger: true,
-              showQuickJumper: true,
-              showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
-              onChange: handleTableChange
-            }}
-          />
+        {/* 快速操作 */}
+        <Card title="快速操作">
+          <Row gutter={[16, 16]}>
+            <Col xs={24} sm={12} md={8} lg={6}>
+              <Card.Grid style={{ width: '100%', textAlign: 'center' }}>
+                <UserOutlined style={{ fontSize: '24px', color: '#1890ff', marginBottom: '8px' }} />
+                <div>用户管理</div>
+              </Card.Grid>
+            </Col>
+            <Col xs={24} sm={12} md={8} lg={6}>
+              <Card.Grid style={{ width: '100%', textAlign: 'center' }}>
+                <SoundOutlined style={{ fontSize: '24px', color: '#52c41a', marginBottom: '8px' }} />
+                <div>播客管理</div>
+              </Card.Grid>
+            </Col>
+            <Col xs={24} sm={12} md={8} lg={6}>
+              <Card.Grid style={{ width: '100%', textAlign: 'center' }}>
+                <RiseOutlined style={{ fontSize: '24px', color: '#faad14', marginBottom: '8px' }} />
+                <div>数据分析</div>
+              </Card.Grid>
+            </Col>
+            <Col xs={24} sm={12} md={8} lg={6}>
+              <Card.Grid style={{ width: '100%', textAlign: 'center' }}>
+                <SettingOutlined style={{ fontSize: '24px', color: '#f5222d', marginBottom: '8px' }} />
+                <div>系统设置</div>
+              </Card.Grid>
+            </Col>
+          </Row>
         </Card>
-      </Content>
-    </Layout>
+      </div>
+    </AdminLayout>
   )
 }
