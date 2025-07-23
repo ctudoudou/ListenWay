@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import {
@@ -10,25 +10,20 @@ import {
   Button,
   Switch,
   Select,
-  Typography,
-  Row,
-  Col,
-  Divider,
-  message,
-  Space,
   InputNumber,
-  Upload,
-  Avatar
+  Typography,
+  message,
+  Spin,
+  Divider
 } from 'antd'
 import {
   SettingOutlined,
   SaveOutlined,
-  UploadOutlined,
   ReloadOutlined
 } from '@ant-design/icons'
 import AdminLayout from '@/components/AdminLayout'
 
-const { Title, Text } = Typography
+const { Title } = Typography
 const { TextArea } = Input
 const { Option } = Select
 
@@ -74,7 +69,7 @@ export default function SettingsPage() {
   }, [session, status, router])
 
   // 获取系统设置
-  const fetchSettings = async () => {
+  const fetchSettings = useCallback(async () => {
     setLoading(true)
     try {
       const response = await fetch('/api/admin/settings')
@@ -91,7 +86,7 @@ export default function SettingsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [form])
 
   // 保存系统设置
   const handleSave = async (values: SystemSettings) => {
@@ -132,7 +127,7 @@ export default function SettingsPage() {
     if (session?.user.role === 'ADMIN') {
       fetchSettings()
     }
-  }, [session])
+  }, [session, fetchSettings])
 
   if (status === 'loading') {
     return <div>Loading...</div>

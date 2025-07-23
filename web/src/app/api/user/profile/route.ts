@@ -102,7 +102,11 @@ export async function PUT(request: NextRequest) {
     }
 
     // 准备更新数据
-    const updateData: any = {
+    const updateData: {
+      name: string
+      email: string
+      updatedAt: Date
+    } = {
       name,
       email,
       updatedAt: new Date()

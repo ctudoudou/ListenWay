@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import {
@@ -61,7 +61,7 @@ export default function ProfilePage() {
   }, [session, status, router])
 
   // 获取用户详细信息
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = useCallback(async () => {
     if (!session?.user?.id) return
     
     try {
@@ -77,13 +77,13 @@ export default function ProfilePage() {
     } catch (error) {
       console.error('获取用户信息失败:', error)
     }
-  }
+  }, [session?.user?.id, form])
 
   useEffect(() => {
     if (session) {
       fetchUserProfile()
     }
-  }, [session])
+  }, [session, fetchUserProfile])
 
   // 更新用户信息
   const handleUpdateProfile = async (values: { name: string; email: string }) => {

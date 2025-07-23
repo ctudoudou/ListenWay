@@ -21,7 +21,14 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * pageSize
 
     // 构建查询条件
-    const where: any = {}
+    const where: {
+      OR?: Array<{
+        title?: { contains: string; mode: 'insensitive' }
+        description?: { contains: string; mode: 'insensitive' }
+        user?: { name: { contains: string; mode: 'insensitive' } }
+      }>
+      status?: string
+    } = {}
     
     if (search) {
       where.OR = [

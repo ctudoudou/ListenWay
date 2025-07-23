@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import {
@@ -85,7 +85,7 @@ export default function UsersPage() {
   }, [session, status, router])
 
   // 获取用户列表
-  const fetchUsers = async (page = 1, search = '') => {
+  const fetchUsers = useCallback(async (page = 1, search = '') => {
     setLoading(true)
     try {
       const params = new URLSearchParams({
@@ -112,7 +112,7 @@ export default function UsersPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [pagination.pageSize])
 
   // 删除用户
   const handleDeleteUser = async (userId: string) => {
@@ -201,7 +201,7 @@ export default function UsersPage() {
     if (session?.user.role === 'ADMIN') {
       fetchUsers()
     }
-  }, [session])
+  }, [session, fetchUsers])
 
   if (status === 'loading') {
     return <div>Loading...</div>
