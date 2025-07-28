@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import {
@@ -31,7 +31,6 @@ import {
   SearchOutlined,
   EyeOutlined,
   PlayCircleOutlined,
-  PauseCircleOutlined,
   DownloadOutlined
 } from '@ant-design/icons'
 import AdminLayout from '@/components/AdminLayout'
@@ -100,7 +99,7 @@ export default function PodcastsPage() {
   }, [session, status, router])
 
   // 获取播客列表
-  const fetchPodcasts = async (page = 1, search = '', status = 'all') => {
+  const fetchPodcasts = useCallback(async (page = 1, search = '', status = 'all') => {
     setLoading(true)
     try {
       const params = new URLSearchParams({
@@ -128,7 +127,7 @@ export default function PodcastsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [pagination.pageSize])
 
   // 删除播客
   const handleDeletePodcast = async (podcastId: string) => {
@@ -224,7 +223,7 @@ export default function PodcastsPage() {
     if (session?.user.role === 'ADMIN') {
       fetchPodcasts()
     }
-  }, [session])
+  }, [session, fetchPodcasts])
 
   if (status === 'loading') {
     return <div>Loading...</div>

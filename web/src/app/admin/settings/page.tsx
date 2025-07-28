@@ -13,11 +13,12 @@ import {
   InputNumber,
   Typography,
   message,
-  Spin,
-  Divider
+  Divider,
+  Row,
+  Col,
+  Space
 } from 'antd'
 import {
-  SettingOutlined,
   SaveOutlined,
   ReloadOutlined
 } from '@ant-design/icons'

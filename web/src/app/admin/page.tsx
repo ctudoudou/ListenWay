@@ -11,12 +11,7 @@ import {
   List,
   Avatar,
   Progress,
-  Table,
-  Tag,
-  Space,
-  Button,
-  Input,
-  Popconfirm
+  Tag
 } from 'antd'
 import {
   UserOutlined,
@@ -25,10 +20,7 @@ import {
   DownloadOutlined,
   TrophyOutlined,
   RiseOutlined,
-  SettingOutlined,
-  DashboardOutlined,
-  DeleteOutlined,
-  ReloadOutlined
+  SettingOutlined
 } from '@ant-design/icons'
 import AdminLayout from '@/components/AdminLayout'
 

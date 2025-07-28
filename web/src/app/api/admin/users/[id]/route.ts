@@ -6,17 +6,18 @@ import { prisma } from '@/lib/prisma'
 // PUT /api/admin/users/[id] - 更新用户
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   try {
     const session = await getServerSession(authOptions)
     
-    if (!session || session.user.role !== 'ADMIN') {
+    if (!session || !session.user || session.user.role !== 'ADMIN') {
       return NextResponse.json({ error: '权限不足' }, { status: 403 })
     }
 
     const { name, email, role } = await request.json()
-    const userId = params.id
+    const userId = id
 
     // 验证必填字段
     if (!name || !email || !role) {
@@ -73,16 +74,17 @@ export async function PUT(
 // DELETE /api/admin/users/[id] - 删除用户
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   try {
     const session = await getServerSession(authOptions)
     
-    if (!session || session.user.role !== 'ADMIN') {
+    if (!session || !session.user || session.user.role !== 'ADMIN') {
       return NextResponse.json({ error: '权限不足' }, { status: 403 })
     }
 
-    const userId = params.id
+    const userId = id
 
     // 检查用户是否存在
     const existingUser = await prisma.user.findUnique({

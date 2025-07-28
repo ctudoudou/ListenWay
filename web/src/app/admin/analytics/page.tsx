@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import {
@@ -106,14 +106,14 @@ export default function AnalyticsPage() {
   // 权限检查
   useEffect(() => {
     if (status === 'loading') return
-    if (!session || session.user.role !== 'ADMIN') {
+    if (!session || !session.user || session.user.role !== 'ADMIN') {
       router.push('/')
       return
     }
   }, [session, status, router])
 
   // 获取分析数据
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     setLoading(true)
     try {
       const params = new URLSearchParams({
@@ -239,7 +239,7 @@ export default function AnalyticsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [dateRange, timeRange])
 
   // 时间范围变化
   const handleTimeRangeChange = (value: string) => {
@@ -297,16 +297,16 @@ export default function AnalyticsPage() {
 
   // 初始化数据
   useEffect(() => {
-    if (session?.user.role === 'ADMIN') {
+    if (session?.user?.role === 'ADMIN') {
       fetchAnalytics()
     }
-  }, [session, dateRange, timeRange])
+  }, [session, dateRange, timeRange, fetchAnalytics])
 
   if (status === 'loading') {
     return <div>Loading...</div>
   }
 
-  if (!session || session.user.role !== 'ADMIN') {
+  if (!session || !session.user || session.user.role !== 'ADMIN') {
     return null
   }
 
@@ -319,7 +319,7 @@ export default function AnalyticsPage() {
       title: '播客',
       dataIndex: 'title',
       key: 'title',
-      render: (title: string, record: any) => (
+      render: (title: string, record: AnalyticsData['topPodcasts'][0]) => (
         <div>
           <div style={{ fontWeight: 500 }}>{title}</div>
           <Text type="secondary" style={{ fontSize: '12px' }}>
@@ -347,7 +347,7 @@ export default function AnalyticsPage() {
       title: '用户',
       dataIndex: 'name',
       key: 'name',
-      render: (name: string, record: any) => (
+      render: (name: string, record: AnalyticsData['topUsers'][0]) => (
         <Space>
           <Avatar icon={<UserOutlined />} />
           <div>
@@ -396,7 +396,7 @@ export default function AnalyticsPage() {
             </Select>
             <RangePicker
               value={dateRange}
-              onChange={(dates) => dates && setDateRange(dates)}
+              onChange={(dates) => dates && dates[0] && dates[1] && setDateRange([dates[0], dates[1]])}
               format="YYYY-MM-DD"
             />
           </Space>
